@@ -1,33 +1,40 @@
 set dotenv-load := false
 
 vp := "vp"
-wrangler := "vp exec -- wrangler"
+wrangler := "wrangler"
 db := "typing-app"
 
 default:
     @just --list
 
 dev:
-    {{vp}} dev
+    {{vp}} build
+    {{wrangler}} dev --local --port 8787
 
 check:
     {{vp}} check
+    {{vp}} exec -- tsc --noEmit
     {{vp}} test
     {{vp}} build
 
-deploy: check
+deploy:
+    {{vp}} check
+    {{vp}} test
+    {{vp}} build
     {{wrangler}} deploy
 
 db-migrate:
-    {{wrangler}} d1 migrations apply {{db}} --local
+    CI=1 {{wrangler}} d1 migrations apply {{db}} --local
 
 db-migrate-remote:
     {{wrangler}} d1 migrations apply {{db}} --remote
 
 db-seed:
+    {{vp}} node scripts/build-seed.ts
     {{wrangler}} d1 execute {{db}} --local --file=./seeds/problems.sql --yes
 
 db-seed-remote:
+    {{vp}} node scripts/build-seed.ts
     {{wrangler}} d1 execute {{db}} --remote --file=./seeds/problems.sql --yes
 
 db-create-remote:

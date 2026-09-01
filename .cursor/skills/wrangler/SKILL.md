@@ -21,15 +21,15 @@ Use `wrangler.jsonc`. Set a recent `compatibility_date`. After config changes ru
 
 Commands go through `just` when possible.
 
-| Task | just / wrangler |
-| --- | --- |
-| Local dev | `just dev`（Vite + Cloudflare plugin） |
-| Deploy | `just deploy` |
-| Local migrate | `just db-migrate` = `wrangler d1 migrations apply typing-app --local` |
-| Remote migrate | `just db-migrate-remote` |
-| Seed local | `just db-seed` |
-| Types | `vp exec wrangler types` |
-| Auth | `vp exec wrangler login` / `whoami` |
+| Task           | just / wrangler                                                       |
+| -------------- | --------------------------------------------------------------------- |
+| Local dev      | `just dev`（Vite + Cloudflare plugin）                                |
+| Deploy         | `just deploy`                                                         |
+| Local migrate  | `just db-migrate` = `wrangler d1 migrations apply typing-app --local` |
+| Remote migrate | `just db-migrate-remote`                                              |
+| Seed local     | `just db-seed`                                                        |
+| Types          | `vp exec wrangler types`                                              |
+| Auth           | `vp exec wrangler login` / `whoami`                                   |
 
 ## D1
 

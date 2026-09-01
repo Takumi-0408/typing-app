@@ -12,9 +12,9 @@
         let pkgs = nixpkgs.legacyPackages.${system};
         in {
           default = pkgs.mkShell {
-            packages = [ pkgs.just pkgs.git ];
+            packages = [ pkgs.just pkgs.git pkgs.wrangler ];
             shellHook = ''
-              echo "年収打: just / vp を使います。vp が無ければ https://vite.plus を入れてください。"
+              echo "年収打: just / vp / wrangler を使います。vp が無ければ https://vite.plus を入れてください。"
             '';
           };
         });

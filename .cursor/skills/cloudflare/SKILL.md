@@ -9,11 +9,11 @@ description: Comprehensive Cloudflare platform skill covering Workers, Pages, st
 
 Your knowledge of Cloudflare APIs, types, limits, and pricing may be outdated. **Prefer retrieval over pre-training**.
 
-| Source | How to retrieve | Use for |
-|--------|----------------|---------|
-| Cloudflare docs | `https://developers.cloudflare.com/` | Limits, pricing, API reference, compatibility dates/flags |
-| Wrangler config schema | `node_modules/wrangler/config-schema.json` | Config fields, binding shapes, allowed values |
-| Product changelogs | `https://developers.cloudflare.com/changelog/` | Recent changes |
+| Source                 | How to retrieve                                | Use for                                                   |
+| ---------------------- | ---------------------------------------------- | --------------------------------------------------------- |
+| Cloudflare docs        | `https://developers.cloudflare.com/`           | Limits, pricing, API reference, compatibility dates/flags |
+| Wrangler config schema | `node_modules/wrangler/config-schema.json`     | Config fields, binding shapes, allowed values             |
+| Product changelogs     | `https://developers.cloudflare.com/changelog/` | Recent changes                                            |
 
 When docs disagree with memory, **trust the docs**.
 

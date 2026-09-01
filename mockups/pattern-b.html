@@ -1,293 +1,555 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>年収打 — Pattern B</title>
-  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --ink: #403248;
-      --muted: #847790;
-      --line: #f0ddd0;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: "M PLUS Rounded 1c", sans-serif;
-      color: var(--ink);
-      background:
-        radial-gradient(700px 300px at 0% 0%, #ffe7c2, transparent 60%),
-        radial-gradient(700px 300px at 100% 0%, #ffd7e8, transparent 55%),
-        #fff8f1;
-    }
-    .switcher {
-      position: fixed; top: 12px; right: 12px; z-index: 20;
-      display: flex; gap: 6px; background: #fff; border-radius: 999px; padding: 5px;
-      border: 1px solid var(--line);
-    }
-    .switcher button, .switcher a {
-      border: 0; background: transparent; font: inherit; font-size: 12px;
-      padding: 6px 10px; border-radius: 999px; cursor: pointer; color: var(--muted); text-decoration: none;
-    }
-    .switcher button.active { background: #ffe0b8; color: var(--ink); font-weight: 700; }
-    .screen { display: none; min-height: 100vh; }
-    .screen.on { display: block; }
-    .shell { width: min(1040px, calc(100% - 24px)); margin: 28px auto 40px; }
-    .hud-row {
-      display: grid;
-      grid-template-columns: 1.3fr 1fr 0.7fr;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-    .meter {
-      border-radius: 22px;
-      padding: 16px 18px;
-      min-height: 96px;
-    }
-    .meter span { display: block; font-size: 12px; color: #7a5a42; }
-    .meter b { display: block; font-size: 34px; font-family: Nunito, sans-serif; line-height: 1.15; }
-    .pay { background: #c8f5d4; }
-    .time { background: #ffd0a8; }
-    .lv { background: #cfe8ff; }
-    .stage {
-      display: grid;
-      grid-template-columns: 72px 1fr;
-      background: #fff;
-      border-radius: 26px;
-      min-height: 560px;
-      overflow: hidden;
-      border: 1px solid #f3e1d4;
-    }
-    .slim {
-      background: #fff1e4;
-      padding: 14px 8px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-    }
-    .icon {
-      width: 42px; height: 42px; border-radius: 14px;
-      display: grid; place-items: center; font-weight: 800; background: #fff;
-    }
-    .icon.on { background: #ffd18c; }
-    .feed { padding: 20px 24px 16px; display: flex; flex-direction: column; }
-    .ch-name { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
-    .card {
-      border-radius: 18px;
-      padding: 14px 16px;
-      margin-bottom: 12px;
-    }
-    .card.in { background: #fff6ec; }
-    .card.out { background: #e9fff1; }
-    .who { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
-    .who b { color: var(--ink); margin-right: 6px; }
-    .gain {
-      margin-top: 8px; display: inline-block; background: #fff3b0;
-      border-radius: 999px; padding: 2px 8px; font-family: Nunito, sans-serif; font-size: 12px;
-    }
-    .composer { margin-top: auto; }
-    .target {
-      background: #fff0f6;
-      border-radius: 16px;
-      padding: 12px;
-      margin-bottom: 8px;
-    }
-    .target label { color: #d15b8a; font-size: 11px; }
-    ruby rt { font-size: 10px; color: #a8889a; }
-    .roma { margin-top: 6px; font-family: Nunito, monospace, sans-serif; }
-    .roma .done { color: #2f9d6a; }
-    .roma .now { background: #ffd0e4; border-radius: 4px; padding: 0 2px; }
-    .roma .rest { color: #cdb8c2; }
-    .box { background: #f7f3ef; border-radius: 14px; padding: 10px 12px; color: var(--muted); }
-    .center { width: min(760px, calc(100% - 32px)); margin: 56px auto; }
-    .panel { background: #fff; border-radius: 28px; padding: 36px; border: 1px solid #f3e1d4; }
-    .kicker { color: #e07a3a; font-size: 12px; letter-spacing: 0.08em; font-family: Nunito, sans-serif; }
-    h1 { margin: 8px 0; font-size: 42px; }
-    .lead { color: var(--muted); line-height: 1.7; }
-    .picks { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 22px 0; }
-    .group { background: #fff6ec; border-radius: 18px; padding: 14px; }
-    .group p { margin: 0 0 10px; color: var(--muted); font-size: 13px; }
-    .opt {
-      border: 0; background: #fff; border-radius: 12px; padding: 10px 12px;
-      font: inherit; cursor: pointer; margin: 0 6px 6px 0;
-    }
-    .opt.on { background: #ffd18c; font-weight: 800; }
-    .cta {
-      border: 0; background: #ff8a4a; color: #fff; border-radius: 14px;
-      padding: 12px 18px; font: inherit; font-weight: 800; cursor: pointer;
-    }
-    .ghost { background: #fff; color: var(--ink); border: 1px solid var(--line); }
-    .row { display: flex; gap: 10px; flex-wrap: wrap; }
-    .salary { font-size: 60px; font-family: Nunito, sans-serif; margin: 6px 0; }
-    .sub { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0; }
-    .stat { border-radius: 18px; padding: 12px; }
-    .stat span { display: block; font-size: 12px; color: #7a5a42; }
-    .stat b { font-size: 24px; font-family: Nunito, sans-serif; }
-    .stat:nth-child(1) { background: #cfe8ff; }
-    .stat:nth-child(2) { background: #c8f5d4; }
-    .stat:nth-child(3) { background: #ffd0a8; }
-    .stat:nth-child(4) { background: #fff3b0; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { text-align: left; padding: 8px 4px; border-bottom: 1px solid #f3e1d4; }
-    th { color: var(--muted); font-size: 12px; font-weight: 500; }
-    .bar { height: 10px; background: #f6e6d8; border-radius: 99px; overflow: hidden; margin-bottom: 10px; }
-    .bar i { display: block; height: 100%; background: #ff9b6a; }
-  </style>
-</head>
-<body>
-  <nav class="switcher">
-    <a href="index.html">比較</a>
-    <button data-screen="home" class="active">ホーム</button>
-    <button data-screen="play">プレイ</button>
-    <button data-screen="result">結果</button>
-    <button data-screen="stats">分析</button>
-  </nav>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>年収打 — Pattern B</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&family=Nunito:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #403248;
+        --muted: #847790;
+        --line: #f0ddd0;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: 'M PLUS Rounded 1c', sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(700px 300px at 0% 0%, #ffe7c2, transparent 60%),
+          radial-gradient(700px 300px at 100% 0%, #ffd7e8, transparent 55%), #fff8f1;
+      }
+      .switcher {
+        position: fixed;
+        top: 12px;
+        right: 12px;
+        z-index: 20;
+        display: flex;
+        gap: 6px;
+        background: #fff;
+        border-radius: 999px;
+        padding: 5px;
+        border: 1px solid var(--line);
+      }
+      .switcher button,
+      .switcher a {
+        border: 0;
+        background: transparent;
+        font: inherit;
+        font-size: 12px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        cursor: pointer;
+        color: var(--muted);
+        text-decoration: none;
+      }
+      .switcher button.active {
+        background: #ffe0b8;
+        color: var(--ink);
+        font-weight: 700;
+      }
+      .screen {
+        display: none;
+        min-height: 100vh;
+      }
+      .screen.on {
+        display: block;
+      }
+      .shell {
+        width: min(1040px, calc(100% - 24px));
+        margin: 28px auto 40px;
+      }
+      .hud-row {
+        display: grid;
+        grid-template-columns: 1.3fr 1fr 0.7fr;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+      .meter {
+        border-radius: 22px;
+        padding: 16px 18px;
+        min-height: 96px;
+      }
+      .meter span {
+        display: block;
+        font-size: 12px;
+        color: #7a5a42;
+      }
+      .meter b {
+        display: block;
+        font-size: 34px;
+        font-family: Nunito, sans-serif;
+        line-height: 1.15;
+      }
+      .pay {
+        background: #c8f5d4;
+      }
+      .time {
+        background: #ffd0a8;
+      }
+      .lv {
+        background: #cfe8ff;
+      }
+      .stage {
+        display: grid;
+        grid-template-columns: 72px 1fr;
+        background: #fff;
+        border-radius: 26px;
+        min-height: 560px;
+        overflow: hidden;
+        border: 1px solid #f3e1d4;
+      }
+      .slim {
+        background: #fff1e4;
+        padding: 14px 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+      .icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        font-weight: 800;
+        background: #fff;
+      }
+      .icon.on {
+        background: #ffd18c;
+      }
+      .feed {
+        padding: 20px 24px 16px;
+        display: flex;
+        flex-direction: column;
+      }
+      .ch-name {
+        font-size: 13px;
+        color: var(--muted);
+        margin-bottom: 14px;
+      }
+      .card {
+        border-radius: 18px;
+        padding: 14px 16px;
+        margin-bottom: 12px;
+      }
+      .card.in {
+        background: #fff6ec;
+      }
+      .card.out {
+        background: #e9fff1;
+      }
+      .who {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+      .who b {
+        color: var(--ink);
+        margin-right: 6px;
+      }
+      .gain {
+        margin-top: 8px;
+        display: inline-block;
+        background: #fff3b0;
+        border-radius: 999px;
+        padding: 2px 8px;
+        font-family: Nunito, sans-serif;
+        font-size: 12px;
+      }
+      .composer {
+        margin-top: auto;
+      }
+      .target {
+        background: #fff0f6;
+        border-radius: 16px;
+        padding: 12px;
+        margin-bottom: 8px;
+      }
+      .target label {
+        color: #d15b8a;
+        font-size: 11px;
+      }
+      ruby rt {
+        font-size: 10px;
+        color: #a8889a;
+      }
+      .roma {
+        margin-top: 6px;
+        font-family: Nunito, monospace, sans-serif;
+      }
+      .roma .done {
+        color: #2f9d6a;
+      }
+      .roma .now {
+        background: #ffd0e4;
+        border-radius: 4px;
+        padding: 0 2px;
+      }
+      .roma .rest {
+        color: #cdb8c2;
+      }
+      .box {
+        background: #f7f3ef;
+        border-radius: 14px;
+        padding: 10px 12px;
+        color: var(--muted);
+      }
+      .center {
+        width: min(760px, calc(100% - 32px));
+        margin: 56px auto;
+      }
+      .panel {
+        background: #fff;
+        border-radius: 28px;
+        padding: 36px;
+        border: 1px solid #f3e1d4;
+      }
+      .kicker {
+        color: #e07a3a;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        font-family: Nunito, sans-serif;
+      }
+      h1 {
+        margin: 8px 0;
+        font-size: 42px;
+      }
+      .lead {
+        color: var(--muted);
+        line-height: 1.7;
+      }
+      .picks {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin: 22px 0;
+      }
+      .group {
+        background: #fff6ec;
+        border-radius: 18px;
+        padding: 14px;
+      }
+      .group p {
+        margin: 0 0 10px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .opt {
+        border: 0;
+        background: #fff;
+        border-radius: 12px;
+        padding: 10px 12px;
+        font: inherit;
+        cursor: pointer;
+        margin: 0 6px 6px 0;
+      }
+      .opt.on {
+        background: #ffd18c;
+        font-weight: 800;
+      }
+      .cta {
+        border: 0;
+        background: #ff8a4a;
+        color: #fff;
+        border-radius: 14px;
+        padding: 12px 18px;
+        font: inherit;
+        font-weight: 800;
+        cursor: pointer;
+      }
+      .ghost {
+        background: #fff;
+        color: var(--ink);
+        border: 1px solid var(--line);
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .salary {
+        font-size: 60px;
+        font-family: Nunito, sans-serif;
+        margin: 6px 0;
+      }
+      .sub {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin: 20px 0;
+      }
+      .stat {
+        border-radius: 18px;
+        padding: 12px;
+      }
+      .stat span {
+        display: block;
+        font-size: 12px;
+        color: #7a5a42;
+      }
+      .stat b {
+        font-size: 24px;
+        font-family: Nunito, sans-serif;
+      }
+      .stat:nth-child(1) {
+        background: #cfe8ff;
+      }
+      .stat:nth-child(2) {
+        background: #c8f5d4;
+      }
+      .stat:nth-child(3) {
+        background: #ffd0a8;
+      }
+      .stat:nth-child(4) {
+        background: #fff3b0;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 8px 4px;
+        border-bottom: 1px solid #f3e1d4;
+      }
+      th {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 500;
+      }
+      .bar {
+        height: 10px;
+        background: #f6e6d8;
+        border-radius: 99px;
+        overflow: hidden;
+        margin-bottom: 10px;
+      }
+      .bar i {
+        display: block;
+        height: 100%;
+        background: #ff9b6a;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="switcher">
+      <a href="index.html">比較</a>
+      <button data-screen="home" class="active">ホーム</button>
+      <button data-screen="play">プレイ</button>
+      <button data-screen="result">結果</button>
+      <button data-screen="stats">分析</button>
+    </nav>
 
-  <section class="screen on" id="home">
-    <div class="center">
-      <div class="panel">
-        <div class="kicker">PINCHWORKS PAYROLL</div>
-        <h1>年収打</h1>
-        <p class="lead">返信 1 通ごとに給料が乗る。制限時間内の合計が、ゲーム内年収です。</p>
-        <div class="picks">
-          <div class="group">
-            <p>難易度</p>
-            <button class="opt">初級 新米</button>
-            <button class="opt on">中級 慣れてきた</button>
-            <button class="opt">上級 つよつよ</button>
-          </div>
-          <div class="group">
-            <p>制限時間</p>
-            <button class="opt">30秒</button>
-            <button class="opt on">1分</button>
-            <button class="opt">2分</button>
-          </div>
-        </div>
-        <div class="row">
-          <button class="cta" data-go="play">年収を稼ぎにいく</button>
-          <button class="cta ghost" data-go="stats">分析を見る</button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="screen" id="play">
-    <div class="shell">
-      <div class="hud-row">
-        <div class="meter pay"><span>現在年収</span><b>2,400,000 円</b></div>
-        <div class="meter time"><span>残り時間</span><b>0:47</b></div>
-        <div class="meter lv"><span>難易度</span><b>初級</b></div>
-      </div>
-      <div class="stage">
-        <aside class="slim">
-          <div class="icon">P</div>
-          <div class="icon">#</div>
-          <div class="icon on">R</div>
-          <div class="icon">!</div>
-          <div class="icon">C</div>
-        </aside>
-        <div class="feed">
-          <div class="ch-name">ピンチワークス / #review</div>
-          <div class="card in">
-            <div class="who"><b>佐藤</b> PM ・ 10:21</div>
-            PR #123 のレビューお願いできますか？
-          </div>
-          <div class="card out">
-            <div class="who"><b>あなた</b> フルスタック ・ 10:21</div>
-            確認します。少々お待ちください。コーヒーのチャージが先ですが。
-            <div class="gain">+1,200,000 円</div>
-          </div>
-          <div class="card in">
-            <div class="who"><b>佐藤</b> PM ・ 10:22</div>
-            ログイン画面、今日中に終わりそう？
-          </div>
-          <div class="composer">
-            <div class="target">
-              <label>打つ返信</label>
-              <div>
-                <ruby>アサイン<rt>あさいん</rt></ruby>された<ruby>範囲<rt>はんい</rt></ruby>は<ruby>本日中<rt>ほんじつちゅう</rt></ruby>にクローズ<ruby>予定<rt>よてい</rt></ruby>です。<ruby>ボタン<rt>ぼたん</rt></ruby>の<ruby>位置<rt>いち</rt></ruby>でちょっと<ruby>格闘<rt>かくとう</rt></ruby>してます。
-              </div>
-              <div class="roma">
-                <span class="done">asainsareta</span><span class="now">h</span><span class="rest">aniiwahonjitsuchuunikurozuyoteidesu.botannoichidechottokakutousitemasu.</span>
-              </div>
+    <section class="screen on" id="home">
+      <div class="center">
+        <div class="panel">
+          <div class="kicker">PINCHWORKS PAYROLL</div>
+          <h1>年収打</h1>
+          <p class="lead">返信 1 通ごとに給料が乗る。制限時間内の合計が、ゲーム内年収です。</p>
+          <div class="picks">
+            <div class="group">
+              <p>難易度</p>
+              <button class="opt">初級 新米</button>
+              <button class="opt on">中級 慣れてきた</button>
+              <button class="opt">上級 つよつよ</button>
             </div>
-            <div class="box">asainsareta — ローマ字で続きを入力</div>
+            <div class="group">
+              <p>制限時間</p>
+              <button class="opt">30秒</button>
+              <button class="opt on">1分</button>
+              <button class="opt">2分</button>
+            </div>
+          </div>
+          <div class="row">
+            <button class="cta" data-go="play">年収を稼ぎにいく</button>
+            <button class="cta ghost" data-go="stats">分析を見る</button>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="screen" id="result">
-    <div class="center">
-      <div class="panel">
-        <div class="kicker">中級 / 1分 / 4通成立</div>
-        <div>今回の年収</div>
-        <div class="salary">8,240,000 円</div>
-        <p class="lead">ピンチワークス、今日も無事にチャットで稼いだ。カタカナは資産です。</p>
-        <div class="sub">
-          <div class="stat"><span>入力速度</span><b>214.0</b> kpm</div>
-          <div class="stat"><span>正確性</span><b>94.2%</b></div>
-          <div class="stat"><span>ミス数</span><b>11</b></div>
-          <div class="stat"><span>最大連続</span><b>86</b></div>
+    <section class="screen" id="play">
+      <div class="shell">
+        <div class="hud-row">
+          <div class="meter pay"><span>現在年収</span><b>2,400,000 円</b></div>
+          <div class="meter time"><span>残り時間</span><b>0:47</b></div>
+          <div class="meter lv"><span>難易度</span><b>初級</b></div>
         </div>
-        <div class="row">
-          <button class="cta" data-go="play">もう一度</button>
-          <button class="cta ghost" data-go="home">ホーム</button>
-          <button class="cta ghost" data-go="stats">分析を見る</button>
+        <div class="stage">
+          <aside class="slim">
+            <div class="icon">P</div>
+            <div class="icon">#</div>
+            <div class="icon on">R</div>
+            <div class="icon">!</div>
+            <div class="icon">C</div>
+          </aside>
+          <div class="feed">
+            <div class="ch-name">ピンチワークス / #review</div>
+            <div class="card in">
+              <div class="who"><b>佐藤</b> PM ・ 10:21</div>
+              PR #123 のレビューお願いできますか？
+            </div>
+            <div class="card out">
+              <div class="who"><b>あなた</b> フルスタック ・ 10:21</div>
+              確認します。少々お待ちください。コーヒーのチャージが先ですが。
+              <div class="gain">+1,200,000 円</div>
+            </div>
+            <div class="card in">
+              <div class="who"><b>佐藤</b> PM ・ 10:22</div>
+              ログイン画面、今日中に終わりそう？
+            </div>
+            <div class="composer">
+              <div class="target">
+                <label>打つ返信</label>
+                <div>
+                  <ruby>アサイン<rt>あさいん</rt></ruby
+                  >された<ruby>範囲<rt>はんい</rt></ruby
+                  >は<ruby>本日中<rt>ほんじつちゅう</rt></ruby
+                  >にクローズ<ruby>予定<rt>よてい</rt></ruby
+                  >です。<ruby>ボタン<rt>ぼたん</rt></ruby
+                  >の<ruby>位置<rt>いち</rt></ruby
+                  >でちょっと<ruby>格闘<rt>かくとう</rt></ruby
+                  >してます。
+                </div>
+                <div class="roma">
+                  <span class="done">asainsareta</span><span class="now">h</span
+                  ><span class="rest"
+                    >aniiwahonjitsuchuunikurozuyoteidesu.botannoichidechottokakutousitemasu.</span
+                  >
+                </div>
+              </div>
+              <div class="box">asainsareta — ローマ字で続きを入力</div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="screen" id="stats">
-    <div class="center">
-      <div class="panel">
-        <div class="kicker">TYPING LAB</div>
-        <h1 style="font-size:32px">分析</h1>
-        <p class="lead">これまでのプレイから、苦手キー・指・動きを集計しています。</p>
-        <h3>苦手キー</h3>
-        <table>
-          <tr><th>キー</th><th>入力</th><th>ミス</th><th>ミス率</th></tr>
-          <tr><td>;</td><td>42</td><td>11</td><td>20.8%</td></tr>
-          <tr><td>y</td><td>88</td><td>14</td><td>13.7%</td></tr>
-          <tr><td>@</td><td>36</td><td>5</td><td>12.2%</td></tr>
-        </table>
-        <h3>苦手な指</h3>
-        <p>右小指 <b>18.4%</b></p>
-        <div class="bar"><i style="width:72%"></i></div>
-        <p>左薬指 <b>11.1%</b></p>
-        <div class="bar"><i style="width:44%"></i></div>
-        <h3>苦手な動き</h3>
-        <table>
-          <tr><th>遷移</th><th>出現</th><th>ミス</th><th>ミス率</th></tr>
-          <tr><td>s → h</td><td>24</td><td>6</td><td>20.0%</td></tr>
-          <tr><td>t → u</td><td>31</td><td>5</td><td>13.9%</td></tr>
-          <tr><td># → 4</td><td>18</td><td>3</td><td>14.3%</td></tr>
-        </table>
-        <button class="cta ghost" data-go="home">ホームへ戻る</button>
+    <section class="screen" id="result">
+      <div class="center">
+        <div class="panel">
+          <div class="kicker">中級 / 1分 / 4通成立</div>
+          <div>今回の年収</div>
+          <div class="salary">8,240,000 円</div>
+          <p class="lead">ピンチワークス、今日も無事にチャットで稼いだ。カタカナは資産です。</p>
+          <div class="sub">
+            <div class="stat"><span>入力速度</span><b>214.0</b> kpm</div>
+            <div class="stat"><span>正確性</span><b>94.2%</b></div>
+            <div class="stat"><span>ミス数</span><b>11</b></div>
+            <div class="stat"><span>最大連続</span><b>86</b></div>
+          </div>
+          <div class="row">
+            <button class="cta" data-go="play">もう一度</button>
+            <button class="cta ghost" data-go="home">ホーム</button>
+            <button class="cta ghost" data-go="stats">分析を見る</button>
+          </div>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <script>
-    const show = (id) => {
-      document.querySelectorAll(".screen").forEach((el) => el.classList.toggle("on", el.id === id));
-      document.querySelectorAll(".switcher button").forEach((el) => el.classList.toggle("active", el.dataset.screen === id));
-    };
-    document.querySelectorAll("[data-screen]").forEach((btn) => btn.addEventListener("click", () => show(btn.dataset.screen)));
-    document.querySelectorAll("[data-go]").forEach((btn) => btn.addEventListener("click", () => show(btn.dataset.go)));
-    document.querySelectorAll(".group").forEach((group) => {
-      group.addEventListener("click", (e) => {
-        if (e.target.classList.contains("opt")) {
-          group.querySelectorAll(".opt").forEach((b) => b.classList.remove("on"));
-          e.target.classList.add("on");
-        }
-      });
-    });
-  </script>
-</body>
+    <section class="screen" id="stats">
+      <div class="center">
+        <div class="panel">
+          <div class="kicker">TYPING LAB</div>
+          <h1 style="font-size: 32px">分析</h1>
+          <p class="lead">これまでのプレイから、苦手キー・指・動きを集計しています。</p>
+          <h3>苦手キー</h3>
+          <table>
+            <tr>
+              <th>キー</th>
+              <th>入力</th>
+              <th>ミス</th>
+              <th>ミス率</th>
+            </tr>
+            <tr>
+              <td>;</td>
+              <td>42</td>
+              <td>11</td>
+              <td>20.8%</td>
+            </tr>
+            <tr>
+              <td>y</td>
+              <td>88</td>
+              <td>14</td>
+              <td>13.7%</td>
+            </tr>
+            <tr>
+              <td>@</td>
+              <td>36</td>
+              <td>5</td>
+              <td>12.2%</td>
+            </tr>
+          </table>
+          <h3>苦手な指</h3>
+          <p>右小指 <b>18.4%</b></p>
+          <div class="bar"><i style="width: 72%"></i></div>
+          <p>左薬指 <b>11.1%</b></p>
+          <div class="bar"><i style="width: 44%"></i></div>
+          <h3>苦手な動き</h3>
+          <table>
+            <tr>
+              <th>遷移</th>
+              <th>出現</th>
+              <th>ミス</th>
+              <th>ミス率</th>
+            </tr>
+            <tr>
+              <td>s → h</td>
+              <td>24</td>
+              <td>6</td>
+              <td>20.0%</td>
+            </tr>
+            <tr>
+              <td>t → u</td>
+              <td>31</td>
+              <td>5</td>
+              <td>13.9%</td>
+            </tr>
+            <tr>
+              <td># → 4</td>
+              <td>18</td>
+              <td>3</td>
+              <td>14.3%</td>
+            </tr>
+          </table>
+          <button class="cta ghost" data-go="home">ホームへ戻る</button>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      const show = (id) => {
+        document
+          .querySelectorAll('.screen')
+          .forEach((el) => el.classList.toggle('on', el.id === id))
+        document
+          .querySelectorAll('.switcher button')
+          .forEach((el) => el.classList.toggle('active', el.dataset.screen === id))
+      }
+      document
+        .querySelectorAll('[data-screen]')
+        .forEach((btn) => btn.addEventListener('click', () => show(btn.dataset.screen)))
+      document
+        .querySelectorAll('[data-go]')
+        .forEach((btn) => btn.addEventListener('click', () => show(btn.dataset.go)))
+      document.querySelectorAll('.group').forEach((group) => {
+        group.addEventListener('click', (e) => {
+          if (e.target.classList.contains('opt')) {
+            group.querySelectorAll('.opt').forEach((b) => b.classList.remove('on'))
+            e.target.classList.add('on')
+          }
+        })
+      })
+    </script>
+  </body>
 </html>

@@ -1,0 +1,311 @@
+:root {
+  --ink: #2f3b4d;
+  --muted: #7590a3;
+  --line: #d7ebf5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'M PLUS Rounded 1c', 'Hiragino Sans', sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(800px 400px at 50% -10%, #d8f3ff, transparent 55%),
+    radial-gradient(700px 360px at 100% 80%, #ffe8f4, transparent 50%), #f4fbff;
+}
+
+button,
+.opt {
+  font: inherit;
+  cursor: pointer;
+}
+
+.center {
+  width: min(640px, calc(100% - 32px));
+  margin: 48px auto;
+}
+
+.panel {
+  background: #fff;
+  border-radius: 28px;
+  padding: 32px;
+  border: 1px solid var(--line);
+}
+
+.kicker {
+  color: #4ea0c8;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  font-family: Nunito, sans-serif;
+}
+
+h1 {
+  margin: 8px 0;
+  font-size: 40px;
+}
+
+.lead {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.picks {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.group {
+  background: #eef8ff;
+  border-radius: 18px;
+  padding: 14px;
+}
+
+.group p {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.opt {
+  border: 0;
+  background: #fff;
+  border-radius: 999px;
+  padding: 8px 12px;
+  margin: 0 6px 6px 0;
+}
+
+.opt.on {
+  background: #9ee4ff;
+  font-weight: 800;
+}
+
+.cta {
+  border: 0;
+  background: #4db3d9;
+  color: #fff;
+  border-radius: 999px;
+  padding: 12px 18px;
+  font-weight: 800;
+}
+
+.ghost {
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.float-hud {
+  position: sticky;
+  top: 16px;
+  z-index: 5;
+  width: min(560px, calc(100% - 24px));
+  margin: 16px auto 0;
+  display: flex;
+  gap: 8px;
+}
+
+.float-hud div {
+  flex: 1;
+  background: #fff;
+  border-radius: 16px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+}
+
+.float-hud span {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.float-hud b {
+  font-family: Nunito, sans-serif;
+}
+
+.float-hud .pay {
+  background: #d9ffe8;
+}
+
+.float-hud .time {
+  background: #ffe6c8;
+}
+
+.col {
+  width: min(560px, calc(100% - 24px));
+  margin: 16px auto 40px;
+}
+
+.thread {
+  background: #fff;
+  border-radius: 28px;
+  padding: 18px 16px 16px;
+  min-height: 620px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+}
+
+.thread-head {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.thread-head small {
+  color: var(--muted);
+}
+
+.bub {
+  max-width: 86%;
+  padding: 10px 14px;
+  border-radius: 18px;
+  margin-bottom: 10px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.bub.in {
+  background: #eef8ff;
+  border-bottom-left-radius: 6px;
+}
+
+.bub.out {
+  background: #e4ffef;
+  margin-left: auto;
+  border-bottom-right-radius: 6px;
+}
+
+.nm {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+
+.gain {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  font-family: Nunito, sans-serif;
+  color: #2a8f64;
+}
+
+.composer {
+  margin-top: auto;
+}
+
+.target {
+  background: #fff4fa;
+  border-radius: 16px;
+  padding: 12px;
+  margin-bottom: 8px;
+}
+
+.target label {
+  font-size: 11px;
+  color: #d15b8a;
+}
+
+.reading {
+  margin-top: 6px;
+  color: #7a8b99;
+  font-size: 13px;
+}
+
+.roma {
+  margin-top: 6px;
+  font-family: Nunito, ui-monospace, monospace;
+  word-break: break-all;
+}
+
+.roma .done {
+  color: #2f9d6a;
+}
+
+.roma .rest {
+  color: #c5d0da;
+}
+
+.box {
+  background: #f3f8fc;
+  border-radius: 16px;
+  padding: 10px 12px;
+  color: var(--muted);
+  min-height: 42px;
+}
+
+.salary {
+  font-size: 52px;
+  font-family: Nunito, sans-serif;
+  margin: 8px 0;
+}
+
+.sub {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.stat {
+  background: #eef8ff;
+  border-radius: 18px;
+  padding: 12px;
+}
+
+.stat:nth-child(2) {
+  background: #e4ffef;
+}
+
+.stat:nth-child(3) {
+  background: #fff0e4;
+}
+
+.stat:nth-child(4) {
+  background: #fff7cc;
+}
+
+.stat span {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.stat b {
+  font-size: 22px;
+  font-family: Nunito, sans-serif;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 8px 4px;
+  border-bottom: 1px solid #e4f1f8;
+}
+
+th {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.empty {
+  color: var(--muted);
+  line-height: 1.6;
+}
