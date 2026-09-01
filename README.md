@@ -22,6 +22,8 @@ just dev
 
 `just dev` は SPA をビルドしてから、Nix の Wrangler でローカル D1 付きサーバを起動します（http://127.0.0.1:8787 ）。
 
+公開 URL: https://typing-app.nenshuda.workers.dev
+
 ## デプロイ
 
 アカウント操作は本人のブラウザログインが必要です。

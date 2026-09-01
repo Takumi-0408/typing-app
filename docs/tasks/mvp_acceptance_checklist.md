@@ -29,6 +29,6 @@
 - [x] D1 変更は migration。ローカルと本番が分かれている
 - [x] `just dev` / `just check` / `just deploy` / `just db-migrate` がある
 - [x] `just check` で lint、typecheck、test、build が通る
-- [ ] React と Hono が 1 つの Worker にデプロイされている
+- [x] React と Hono が 1 つの Worker にデプロイされている
 - [x] 公開 GitHub リポジトリ `Takumi-0408/typing-app` の main に載っている
-- [ ] Cloudflare Workers 上でプレイできる
+- [x] Cloudflare Workers 上でプレイできる

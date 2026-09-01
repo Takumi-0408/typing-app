@@ -13,7 +13,7 @@
     {
       "binding": "DB",
       "database_name": "typing-app",
-      "database_id": "00000000-0000-4000-8000-000000000001",
+      "database_id": "6250a3ea-557a-49ff-9d45-f0b9de715bee",
       "migrations_dir": "migrations",
     },
   ],
